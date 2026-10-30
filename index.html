@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Buddy’s Transport Services</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#0f1b3d;--mute:#5b6785;--line:#dde3f0;--accent:#f2b705;--accent-ink:#0b2a6b;--ok:#1d8a4e;--bad:#c0392b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1530;--card:#12214a;--ink:#eef2ff;--mute:#9fb0d6;--line:#24366b}}
+:root[data-theme="dark"]{--bg:#0a1530;--card:#12214a;--ink:#eef2ff;--mute:#9fb0d6;--line:#24366b}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:480px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;gap:12px;margin:8px 0 16px}
+.logo{width:44px;height:44px;border-radius:12px;background:var(--accent);display:grid;place-items:center;font-size:24px}
+h1{font-size:20px;margin:0}
+.sub{color:var(--mute);font-size:13px}
+.tabs{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:16px}
+.tabs button{flex:1;border:0;background:none;color:var(--mute);padding:10px;border-radius:9px;font:inherit;font-weight:600}
+.tabs button.on{background:var(--accent);color:var(--accent-ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+label{display:block;font-size:13px;font-weight:600;color:var(--mute);margin:12px 0 4px}
+label:first-child{margin-top:0}
+input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+.row{display:flex;gap:10px}.row>div{flex:1}
+.fare{display:flex;justify-content:space-between;align-items:baseline}
+.fare b{font-size:32px}
+.btn{display:block;width:100%;text-align:center;border:0;border-radius:12px;padding:14px;background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:700;margin-top:12px;text-decoration:none}
+.btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.note{font-size:12px;color:var(--mute);margin-top:8px}
+.trip{border-top:1px solid var(--line);padding:12px 0}
+.trip:first-child{border-top:0}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--line);margin-left:6px}
+.pill.done{background:var(--ok);color:#fff}
+.sm{display:flex;gap:8px;margin-top:8px}
+.sm button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.stat{display:flex;gap:10px}.stat div{flex:1;text-align:center}.stat b{display:block;font-size:22px}
+.svc ul{margin:8px 0 0;padding-left:18px}.svc li{margin:4px 0}.slogan{margin-top:10px;font-style:italic;font-weight:700;color:var(--mute)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo">🚗</div><div><h1 id="brand"></h1><div class="sub" id="tag"></div></div></header>
+<div class="tabs"><button id="t1" class="on">Book a ride</button><button id="t2">Driver log</button></div>
+
+<section id="book">
+<div class="card svc"><b>Our services include</b><ul><li>Pick-up &amp; drop-off to hospitals and health centres</li><li>Supermarkets and personal business errands</li><li>Family and group outings</li><li>Serving Sangre Grande and environs</li></ul><div class="slogan">Your Journey… Our Priority</div></div>
+<div class="card">
+<label>Your name</label><input id="name" autocomplete="name" placeholder="Full name">
+<label>Phone</label><input id="phone" type="tel" autocomplete="tel" placeholder="Best number to reach you">
+<label>Pickup address</label><input id="from" placeholder="Where should I meet you?">
+<label>Drop-off address</label><input id="to" placeholder="Where are you headed?">
+<div class="row"><div><label>Date</label><input id="date" type="date"></div><div><label>Time</label><input id="time" type="time"></div></div>
+<label>Trip type</label><select id="route"></select>
+<div class="row"><div id="kmw" class="hide"><label>Distance (km)</label><input id="km" type="number" min="0" step="0.5" placeholder="e.g. 12"></div>
+<div><label>Passengers</label><select id="pax"></select></div></div>
+</div>
+<div class="card">
+<div class="fare"><span class="sub">Estimated fare</span><b id="fare">–</b></div>
+<div class="note" id="breakdown">Enter the distance to see your estimate.</div>
+<div class="note"><b>Please note:</b> prices vary with the pick-up and drop-off locations, gas mileage, night trips, extra stops, and added help such as groceries, packages, luggage and assisting the elderly. Your driver confirms the final price.</div>
+</div>
+<a class="btn" id="send" href="#">Request ride on WhatsApp</a>
+<button class="btn alt" id="copy">Copy request text</button>
+<div class="note" id="msg"></div>
+<a class="btn alt" href="https://www.facebook.com/share/1ZSAkPT185/" target="_blank" rel="noopener">Find us on Facebook</a>
+</section>
+
+<section id="log" class="hide">
+<div class="card stat"><div><b id="sN">0</b><span class="sub">Trips</span></div><div><b id="sP">0</b><span class="sub">Pending</span></div><div><b id="sE">0</b><span class="sub">Earned</span></div></div>
+<div class="card" id="list"></div>
+<button class="btn alt" id="clear">Clear completed</button>
+<div class="note">Requests you send are saved on this device so you can track them. Edit the settings at the top of the page’s code to set your name, number and rates.</div>
+</section>
+</div>
+
+<script>
+var CFG={brand:"Buddy’s Transport Services",tag:"Safe and reliable transport for you and your family",phone:"18683589592",cur:"TT$",base:10,perKm:4,min:25,maxPax:4,routes:[{n:"Airport drop-off",lo:200,hi:250},{n:"Sangre Grande pick-up / drop-off",lo:60,hi:80},{n:"Grande shopping – I wait & help with groceries",lo:100,hi:120},{n:"Out-of-town shopping run, e.g. PriceSmart (round trip)",lo:250,hi:300},{n:"Mount Hope run (drop-off & pick-up)",lo:400,hi:500},{n:"Other trip (by distance)",km:true}]};
+var $=function(i){return document.getElementById(i)};
+var store={get:function(){try{return JSON.parse(localStorage.getItem("trips")||"[]")}catch(e){return []}},set:function(v){try{localStorage.setItem("trips",JSON.stringify(v))}catch(e){}}};
+var mem=store.get();
+$("brand").textContent=CFG.brand;$("tag").textContent=CFG.tag;
+for(var i=1;i<=CFG.maxPax;i++){var o=document.createElement("option");o.value=i;o.textContent=i;$("pax").appendChild(o)}
+CFG.routes.forEach(function(r,i){var o=document.createElement("option");o.value=i;o.textContent=r.n+(r.km?"":" ("+CFG.cur+r.lo+"–"+CFG.cur+r.hi+")");$("route").appendChild(o)});
+var now=new Date();$("date").value=now.toISOString().slice(0,10);
+$("time").value=("0"+now.getHours()).slice(-2)+":"+("0"+now.getMinutes()).slice(-2);
+
+function ftxt(f){return f.lo===f.hi?CFG.cur+f.lo:CFG.cur+f.lo+"–"+CFG.cur+f.hi}
+function calc(){
+ var r=CFG.routes[+$("route").value||0];
+ if(r.km){var km=parseFloat($("km").value);if(!(km>=0)||$("km").value==="")return null;
+  var v=Math.max(CFG.min,Math.round(CFG.base+CFG.perKm*km));return {lo:v,hi:v,mid:v,label:r.n};}
+ return {lo:r.lo,hi:r.hi,mid:Math.round((r.lo+r.hi)/2),label:r.n};
+}
+function msg(){
+ var f=calc();
+ return "Hi "+CFG.brand+", I’d like to book a ride.\n"+
+ "Name: "+$("name").value+"\nPhone: "+$("phone").value+"\nPickup: "+$("from").value+"\nDrop-off: "+$("to").value+
+ "\nTrip: "+(f?f.label:"")+"\nWhen: "+$("date").value+" at "+$("time").value+"\nPassengers: "+$("pax").value+(f?"\nEstimate: "+ftxt(f):"");
+}
+function refresh(){
+ $("kmw").classList.toggle("hide",!CFG.routes[+$("route").value||0].km);
+ var f=calc();$("fare").textContent=f?ftxt(f):"–";
+ $("breakdown").textContent=f?(f.lo===f.hi?"":"Final price depends on waiting time. ")+"Your driver confirms the final price.":"Enter the distance to see your estimate.";
+ $("send").href="https://wa.me/"+CFG.phone+"?text="+encodeURIComponent(msg());
+}
+document.querySelectorAll("#book input,#book select").forEach(function(e){e.addEventListener("input",refresh)});
+refresh();
+
+function valid(){
+ if(!$("name").value.trim()||!$("phone").value.trim()||!$("from").value.trim()||!$("to").value.trim()){$("msg").textContent="Please fill in your name, phone, pickup and drop-off.";return false}
+ var f=calc();
+ mem.unshift({id:Date.now(),name:$("name").value,phone:$("phone").value,from:$("from").value,to:$("to").value,when:$("date").value+" "+$("time").value,pax:$("pax").value,fare:f?f.mid:0,fareTxt:f?ftxt(f):"",trip:f?f.label:"",done:false});
+ store.set(mem);render();return true;
+}
+$("send").addEventListener("click",function(e){if(!valid()){e.preventDefault();return}$("msg").textContent="Request saved. WhatsApp should open with your message."});
+$("copy").addEventListener("click",function(){
+ if(!valid())return;
+ try{navigator.clipboard.writeText(msg());$("msg").textContent="Request copied. Paste it into a text or call "+CFG.phone+"."}catch(e){$("msg").textContent="Couldn’t copy. Use the WhatsApp button instead."}
+});
+
+function render(){
+ var pend=mem.filter(function(t){return !t.done}),done=mem.filter(function(t){return t.done});
+ $("sN").textContent=mem.length;$("sP").textContent=pend.length;
+ $("sE").textContent=CFG.cur+done.reduce(function(a,t){return a+t.fare},0);
+ var h="";
+ mem.forEach(function(t){
+  h+='<div class="trip"><b></b><span class="pill'+(t.done?' done':'')+'">'+(t.done?'Done':'Pending')+'</span>'+
+  '<div class="sub">'+esc(t.when)+' · '+t.pax+' pax · '+esc(t.fareTxt||CFG.cur+t.fare)+'</div><div class="sub">'+esc(t.trip||"")+'</div><div>'+esc(t.from)+' → '+esc(t.to)+'</div>'+
+  '<div class="sm"><button data-a="call" data-i="'+t.id+'">Call</button><button data-a="done" data-i="'+t.id+'">'+(t.done?'Reopen':'Complete')+'</button><button data-a="del" data-i="'+t.id+'">Delete</button></div></div>';
+ });
+ $("list").innerHTML=h||'<div class="sub">No trips yet.</div>';
+ var bs=$("list").querySelectorAll(".trip b");mem.forEach(function(t,i){bs[i].textContent=t.name});
+}
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+$("list").addEventListener("click",function(e){
+ var a=e.target.dataset.a;if(!a)return;var id=+e.target.dataset.i;
+ var t=mem.filter(function(x){return x.id===id})[0];
+ if(a==="done")t.done=!t.done;
+ if(a==="del")mem=mem.filter(function(x){return x.id!==id});
+ if(a==="call"){$("msg").textContent="";location.href="tel:"+t.phone;return}
+ store.set(mem);render();
+});
+$("clear").addEventListener("click",function(){mem=mem.filter(function(t){return !t.done});store.set(mem);render()});
+function tab(b){$("book").classList.toggle("hide",b!==1);$("log").classList.toggle("hide",b!==2);$("t1").classList.toggle("on",b===1);$("t2").classList.toggle("on",b===2)}
+$("t1").onclick=function(){tab(1)};$("t2").onclick=function(){tab(2)};
+render();
+</script>
+</body>
+</html>
